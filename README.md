@@ -1,62 +1,141 @@
-# SurVis - Visual Literature Browser
+# DRL Meets LLM: Sentiment-Aware Crypto Trading Literature Review
 
-![Screenshot](/doc/survis.png)
+This repository contains a customized SurVis literature browser for the topic:
 
-SurVis is a flexible online browser to present and analyze scientific literature. The system is made for authors of survey articles, theses, or books who want to share their references in a user-friendly way. All you need to start is a bib file and a list of keywords for your papers.
+**DRL meets LLM: Literature Review on Sentiment-Aware Crypto Trading**
 
-Test SurVis with a reference literature database: http://dynamicgraphs.fbeck.com
+It is prepared for **COMP4126 Research Methods - Coursework 3** and presents a curated BibTeX collection covering deep reinforcement learning, large language models, sentiment analysis, cryptocurrency trading, and related financial-market studies.
 
-## How To Use SurVis for Your Literature Collection
+## Preview
 
-Dowload the latest SurVis release or fork this repository.
+Start a local static server from the project root:
 
-To start SurVis, open 'src/index.html' in your browser.
+```bash
+python3 -m http.server 8001 --bind 127.0.0.1 --directory src
+```
 
-The bibliography data is stored in 'bib/references.bib' in BibTeX format.
+Then open:
 
-Supplemental data is contained in 'src/data/':
-* 'tag_categories.js': list of special tag categories; they can be used as a prefix for the tags and appear, for instance, 'a:b' refers to tag 'b' in tag category 'a'
-* 'authorized_tags.js': tags that are defined through a description (highlighted in SurVis, description appears as a tooltip)
-* 'search_stopwords.js': a list of stopwords used to exclude terms from search queries
-* 'papers_pdf' (optional): PDF files of the papers, please use the BibTeX id as a file name
-* 'papers_img' (optional): PNG thumbnails for the papers, please use the BibTeX id as a file name
+```text
+http://127.0.0.1:8001/
+```
 
-Please do not edit the files in 'src/data/generated/' because they are created automatically. 
+If the page still shows an older layout after editing files, force refresh the browser:
 
-After completing your changes, just run 'update_data.py' with Python 3. Reload SurVis in the browser to see the changed bibliography. The script will continue to check for updates on the bib file until you stop it.
+```text
+Cmd + Shift + R
+```
 
-If the edit mode is activated, BibTeX entries can be modified in the browser, but are not stored in the 'bib' directory. To make those changes persistent, use 'download BibTex' in SurVis and copy the BibTeX data to your bib file in the 'bib' directory. You can also use the features to save and load the data from local storage of the browser; be careful, however, these features are still experimental.
+## Project Structure
 
-Further properties of SurVis, such as the title of the page, can be modified in the file 'src/properties.js'. For the publication of your literature collection, you should usually deactivate the edit mode in the properties ('editable = false;').
+```text
+bib/references.bib                 Main BibTeX source file
+src/index.html                     SurVis entry page
+src/properties.js                  Page title, subtitle, visible tag clouds, custom theme
+src/styles/drl_llm_theme.css       Custom simplified visual theme
+src/data/tag_categories.js         Tag groups shown in the filter panel
+src/data/authorized_tags.js        Tag display names and tooltip descriptions
+src/data/generated/bib.js          Generated bibliography data used by SurVis
+update_data.py                     Script for regenerating SurVis data from BibTeX
+```
 
-Enjoy SurVis and send feedback if you like.
+SurVis reads the generated file `src/data/generated/bib.js` in the browser. After changing `bib/references.bib`, regenerate or manually sync the generated data before refreshing the page.
 
-## Learn more
+## Updating References
 
-We've published a paper about SurVis at VAST 2015 - please reference it if you use or want to refer to SurVis in one of your publications. 
+Add or edit papers in:
 
-Beck, Fabian; Koch, Sebastian; Weiskopf, Daniel: Visual Analysis and Dissemination of Scientific Literature Collections with SurVis. In: IEEE Transactions on Visualization and Computer Graphics (2015).
+```text
+bib/references.bib
+```
 
-* DOI: http://dx.doi.org/10.1109/TVCG.2015.2467757
-* Preview video: https://vimeo.com/136206061 
+Each entry should include a `keywords` field with three categories:
 
-## List of Literature Collections Using Survis
+```bibtex
+keywords = {method:DRL, method:Sentiment, domain:Cryptocurrency,type:Journal}
+```
 
-* Dynamic Graph Visualization - http://dynamicgraphs.fbeck.com
-* Visualizing Group Structures in Graphs - http://go.visus.uni-stuttgart.de/groups-in-graphs/
-* Performance Visualization - http://idav.ucdavis.edu/~ki/STAR/
-* Visualization for Software Reuse - http://www.cos.ufrj.br/~schots/survis_reuse/
-* Set Visualization - http://www.cvast.tuwien.ac.at/~alsallakh/SetViz/literature/www/index.html
-* Visualizing High-Dimensional Data - http://www.sci.utah.edu/~shusenl/highDimSurvey/website/
+Required tag categories:
 
-Please contact me (fabian.beck@visus.uni-stuttgart.de) if you know other collections using SurVis.
+```text
+method:  Main method or research approach
+domain:  Market or asset class
+type:    Publication type or venue
+```
 
-## Contact
+Current examples:
 
-Fabian Beck
+```text
+method:DRL
+method:LLM
+method:Sentiment
+method:Traditional-NLP
+method:Review
 
-VISUS, University of Stuttgart
+domain:Cryptocurrency
+domain:Stock
 
-fabian.beck@visus.uni-stuttgart.de
+type:Journal
+type:IEEE
+type:Book
+type:Survey
+```
 
-http://research.fbeck.com
+Avoid missing category tags, because SurVis will otherwise create `?` filter labels.
+
+## Regenerating Data
+
+Run:
+
+```bash
+python3 update_data.py
+```
+
+The script watches `bib/references.bib` and updates:
+
+```text
+src/data/generated/bib.js
+src/data/generated/available_pdf.js
+src/data/generated/available_img.js
+```
+
+Stop it with `Ctrl + C` when finished.
+
+## Customization Notes
+
+Page metadata is configured in:
+
+```text
+src/properties.js
+```
+
+The current page title is:
+
+```text
+DRL meets LLM: Literature Review on Sentiment-Aware Crypto Trading
+```
+
+The custom theme is loaded through:
+
+```js
+var customStyle = 'styles/drl_llm_theme.css';
+```
+
+Tag group labels and descriptions are configured in:
+
+```text
+src/data/tag_categories.js
+src/data/authorized_tags.js
+```
+
+Use these files to keep the filter panel readable and consistent.
+
+## About SurVis
+
+This project is based on SurVis, a visual literature browser for presenting and exploring scientific reference collections.
+
+Original SurVis project:
+
+```text
+https://github.com/fabian-beck/survis
+```
